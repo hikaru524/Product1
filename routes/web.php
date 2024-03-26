@@ -24,5 +24,12 @@ Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name
 Route::get('/list', [App\Http\Controllers\ProductController::class, 'list'])->name('list');
 //新規登録画面表示
 Route::get('/create', [App\Http\Controllers\ProductController::class, 'createShow'])->name('create.show');
+
 //新規登録画面入力
 Route::post('/create', [App\Http\Controllers\ProductController::class, 'create'])->name('create');
+
+//商品詳細画面表示
+Route::get('/product', [App\Http\Controllers\ProductController::class, 'productshow'])->name('product.show');
+
+//商品編集画面表示
+Route::get('/edit', [App\Http\Controllers\ProductController::class, 'productedit'])->name('product.edit');
