@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -32,6 +33,8 @@ class ProductController extends Controller
         ]);
     }
 
+
+    /*登録画面*/
     /**
      * Show the application dashboard.
      *
@@ -50,7 +53,6 @@ class ProductController extends Controller
 
         ]);
     }
-
     /**
      * Show the application dashboard.
      *
@@ -70,6 +72,32 @@ class ProductController extends Controller
         DB::commit();
 
         
-        return redirect('list');
+        return redirect('create');
+    }
+
+
+    /*商品詳細画面 */
+    /**
+     * Show the application dashboard.
+     *
+     * @return \Illuminate\Contracts\Support\Renderable
+     */
+    public function productshow()
+    {   
+        
+        return view('product.product-show');
+    }
+
+
+    /*商品編集画面 */
+    /**
+     * Show the application dashboard.
+     *
+     * @return \Illuminate\Contracts\Support\Renderable
+     */
+    public function productedit()
+    {   
+
+        return view('product.product-edit');
     }
 }
