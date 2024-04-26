@@ -4,9 +4,9 @@
 <div class="container">
     <div class="row justify-content-center">
         <div class="col-md-8">
+            <div class="card-header">商品新規登録</div>
+            
             <div class="card">
-                <div class="card-header">商品新規登録</div>
-
                 <div class="card-body">
                     <form action="{{ route('create') }}" method="POST">
                         @csrf
@@ -34,6 +34,11 @@
                             <label for="exampleInputPassword1">コメント</label>
                             <input type="text" class="form-control" name="comment">
                         </div>
+                        <div class="form-group">
+                            <label for="exampleInputEmail1">商品画像</label>
+                            <input type="file" class="form-control" name="img_path" accept="image/jpeg">
+                        </div>
+
 
                         <button type="submit" class="btn btn-primary">登録</button>
                         <a href="{{ route('list') }}" class="btn btn-primary">戻る</a>

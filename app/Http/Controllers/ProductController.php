@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Product;
+use App\Models\Company;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -18,7 +19,7 @@ class ProductController extends Controller
         $this->middleware('auth');
     }
 
-    /**
+    /**一覧画面
      * Show the application dashboard.
      *
      * @return \Illuminate\Contracts\Support\Renderable
@@ -26,11 +27,42 @@ class ProductController extends Controller
     public function list()
     {   
         $products_model = app()->make('App\Models\Product');
-        $products = $products_model->getAll();
-        return view('product.list', [
-        'products' => $products
+        $products = $products_model->paginate(3);
 
+        $company_model = app()->make('App\Models\Company');
+        $companies = $company_model->getAll();
+
+        return view('product.list', [
+            'products' => $products,
+            'companies' => $companies
         ]);
+    }
+
+    /*
+    
+    /*一覧画面-検索*/
+    public function search(Request $request)
+    {   
+        $date = $request->all();
+
+        $products_model = app()->make('App\Models\Product');
+        $products = $products_model->searchDate($date);
+
+        $company_model = app()->make('App\Models\Company');
+        $companies = $company_model->getAll();
+
+        return view('product.list', [
+        'products' => $products,
+        'companies' => $companies
+        ]);
+    }
+
+    /*一覧画面-削除 */
+    public function destroy($id)
+    {   
+        $products_del = Product::destroy($id);
+        
+        return redirect('list');
     }
 
 
@@ -77,27 +109,63 @@ class ProductController extends Controller
 
 
     /*商品詳細画面 */
-    /**
-     * Show the application dashboard.
-     *
-     * @return \Illuminate\Contracts\Support\Renderable
-     */
-    public function productshow()
+    public function productshow($id)
     {   
-        
-        return view('product.product-show');
+        $products_model = app()->make('App\Models\Product');
+        $products = $products_model->getOneDate($id);
+
+        return view('product.product-show', compact('products'));
     }
 
 
     /*商品編集画面 */
+    public function productedit($id)
+    {   
+        $products_model = app()->make('App\Models\Product');
+        $products = $products_model->getOneDate($id);
+
+        $company_model = app()->make('App\Models\Company');
+        $companies = $company_model->getAll();
+
+        return view('product.product-edit',compact('products'),[
+            'products' => $products,
+            'companies' => $companies
+        ]
+        );
+    }
+    /*商品編集画面-更新 */
+    public function productupdate(Request $request)
+    {   
+        $products = Product::find($request->id);
+        $products->update([
+            "product_name" => $request->product_name,
+            "price" => $request->price,
+            "stock" => $request->stock,
+            "company_id" => $request->company_id,
+            "comment" => $request->comment,
+        ]);
+        
+        return back();
+    }
     /**
      * Show the application dashboard.
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function productedit()
+    public function edit(Request $request)
     {   
+        $data = $request->all();
+        
+        DB::beginTransaction();
+        try {
+            $products_model = app()->make('App\Models\Product');
+            $products = $products_model->InsertProduct($data);
+        } catch (\Exception $e) {
+            DB::rollback();
+        } 
+        DB::commit();
 
-        return view('product.product-edit');
+        
+        return redirect('create');
     }
 }
