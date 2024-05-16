@@ -1,0 +1,116 @@
+@charset "utf-8";
+
+.login-top {
+    margin-bottom: 40px;
+    justify-content: center;
+}
+
+.login-in {
+    margin-bottom: 30px;
+    justify-content: center;
+}
+
+.login-btn {
+    display: flex;
+    justify-content: center;
+}
+
+.container-row {
+    width: 100%;
+    font-size: 1.1rem;
+}
+
+tr {
+    text-align: center;
+    margin: auto;
+    padding: 0;
+}
+
+.row {
+    margin-top: 30px;
+}
+
+.top {
+    font-size: 25px;
+}
+
+.serch-form {
+    display: flex;
+    margin-top: 30px;
+    margin-bottom: 30px;
+}
+
+.col:first-child {
+    margin: 0;
+    margin-top: 30px;
+}
+
+.col {
+    margin-left: 20px;
+    margin-top: 30px;
+}
+
+.pagination {
+    justify-content: center;
+    color: black;
+    margin-top: 30px;
+    font-size: 1.1rem;
+}
+
+.btn-show-del {
+    display: flex;
+    justify-content: space-around;
+}
+
+.car-body {
+    padding: 0;
+}
+
+span {
+    color: crimson;
+}
+
+.card {
+    margin-top: 30px;
+}
+
+.form-gr {
+    display: flex;
+    margin-top: 30px;
+    font-size: 1.3rem;
+}
+
+label {
+    width: 35%;
+    margin-left: 30px;
+}
+
+.form-con {
+    width: 40%;
+    border: 0.05rem solid #dee2e6;
+    border-radius: 0.5rem;
+    background-color: #f8fafc;
+    margin-left: 30px;
+}
+
+.btn1:first-child {
+    margin-left: 20px;
+}
+
+.btn1 {
+    margin-left: 50px;
+}
+
+.btn2:first-child {
+    margin: 0;
+}
+
+.btn2 {
+    width: 15%;
+    margin-left: 50px;
+}
+
+.btn-position {
+    margin-top: 30px;
+    margin-bottom: 30px;
+}

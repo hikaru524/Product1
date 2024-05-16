@@ -27,7 +27,7 @@ class ProductController extends Controller
     public function list()
     {   
         $products_model = app()->make('App\Models\Product');
-        $products = $products_model->paginate(3);
+        $products = $products_model->paginate(6);
 
         $company_model = app()->make('App\Models\Company');
         $companies = $company_model->getAll();
@@ -80,7 +80,7 @@ class ProductController extends Controller
         $company_model = app()->make('App\Models\Company');
         $companies = $company_model->getAll();
 
-        return view('product.create-show', [
+        return view('product.product_create', [
             'companies' => $companies
 
         ]);
@@ -114,7 +114,7 @@ class ProductController extends Controller
         $products_model = app()->make('App\Models\Product');
         $products = $products_model->getOneDate($id);
 
-        return view('product.product-show', compact('products'));
+        return view('product.product_show', compact('products'));
     }
 
 
@@ -127,7 +127,7 @@ class ProductController extends Controller
         $company_model = app()->make('App\Models\Company');
         $companies = $company_model->getAll();
 
-        return view('product.product-edit',compact('products'),[
+        return view('product.product_edit',compact('products'),[
             'products' => $products,
             'companies' => $companies
         ]

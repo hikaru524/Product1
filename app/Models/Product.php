@@ -13,6 +13,7 @@ class Product extends Model
         'product_name',
         'price',
         'stock',
+        'img_path',
         'company_id',
         'comment'
     ];
@@ -100,6 +101,7 @@ class Product extends Model
             'stock' => $data['stock'],
             'company_id' => $data['company_id'],
             'comment' => $data['comment'],
+            'img_path' => $data['img_path'],
             /*'img_path' => $data['img_path'],*/
         ]);
     }

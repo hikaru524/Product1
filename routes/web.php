@@ -19,7 +19,7 @@ Route::get('/', function () {
 
 Auth::routes();
 
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+Route::get('/home', [App\Http\Controllers\ProductController::class, 'list'])->name('list');
 //一覧画面-表示
 Route::get('/list', [App\Http\Controllers\ProductController::class, 'list'])->name('list');
 //一覧画面-削除
