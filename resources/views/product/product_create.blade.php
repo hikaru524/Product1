@@ -8,7 +8,7 @@
             
             <div class="card border border-2 border-subtle">
                 <div class="card-body">
-                    <form action="{{ route('create') }}" method="POST">
+                    <form method="POST" action="{{ route('create') }}" enctype="multipart/form-data">
                         @csrf
                         <div class="form-gr">
                             <label for="exampleInputEmail1">商品名<span>*</span></label>
@@ -36,7 +36,7 @@
                         </div>
                         <div class="form-gr">
                             <label for="exampleInputEmail1">商品画像</label>
-                            <input type="file" class="form-con" name="img_path" accept="image/jpeg">
+                            <input type="file" class="form-con" name="img_path">
                         </div>
 
                         <div class="btn-position">

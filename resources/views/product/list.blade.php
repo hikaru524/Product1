@@ -45,7 +45,7 @@
                             @foreach($products as $value)
                             <tr>
                                 <td>{{ $value->id }}</td>
-                                <td>{{ $value->img_path }}</td>
+                                <td><img src="{{ asset($value->img_path) }}" class="img_list"></td>
                                 <td>{{ $value->product_name }}</td>
                                 <td>¥{{ $value->price }}</td>
                                 <td>{{ $value->stock }}</td>

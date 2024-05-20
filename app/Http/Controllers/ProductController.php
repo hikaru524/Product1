@@ -92,13 +92,30 @@ class ProductController extends Controller
      */
     public function create(Request $request)
     {   
+        $request->validate([
+            'product_name' => 'required', 
+            'company_id' => 'required',
+            'price' => 'required',
+            'stock' => 'required',
+            'comment' => 'nullable', 
+            'img_path' => 'nullable|image',
+        ]);
+        
         $data = $request->all();
         
         DB::beginTransaction();
         try {
+            if($request->hasFile('img_path')){
+                $filename = $request->img_path->getClientOriginalName();
+                $filePath = $request->img_path->storeAs('products', $filename, 'public');
+                $data['img_path']->img_path = '/storage/' . $filePath;
+            }
+            
             $products_model = app()->make('App\Models\Product');
-            $products = $products_model->InsertProduct($data);
+            $products = $products_model->InsertProduct($data);  
+            
         } catch (\Exception $e) {
+            dd($data);
             DB::rollback();
         } 
         DB::commit();
