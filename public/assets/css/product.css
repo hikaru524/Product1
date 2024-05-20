@@ -20,6 +20,22 @@
     font-size: 1.1rem;
 }
 
+td {
+    width: auto;
+    height: 53px;
+}
+
+.img_list {
+    width: auto;
+    height: 35px;
+}
+
+.img_show {
+    width: 10%;
+    height: 10%;
+    margin-left: 30px;
+}
+
 tr {
     text-align: center;
     margin: auto;

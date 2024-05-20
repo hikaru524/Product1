@@ -14,7 +14,7 @@
                         </div>
                         <div class="form-gr">
                             <label for="exampleInputEmail1">商品画像 </label>
-                            <img src="{{ asset($products->img_path) }}" >
+                            <img src="{{ asset($products->img_path) }}" class="img_show">
                             <!--<label for="exampleInputEmail1">{{ $products->img_path }}</label>-->
                         </div>  
                         <div class="form-gr">
