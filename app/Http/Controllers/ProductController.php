@@ -46,7 +46,7 @@ class ProductController extends Controller
         $date = $request->all();
 
         $products_model = app()->make('App\Models\Product');
-        $products = $products_model->searchDate($date);
+        $products = $products_model->searchDate($date)->paginate(6);
 
         $company_model = app()->make('App\Models\Company');
         $companies = $company_model->getAll();
