@@ -27,21 +27,19 @@ class ProductController extends Controller
     public function list()
     {   
         $products_model = app()->make('App\Models\Product');
-        $products = $products_model->paginate(6);
+        $products = $products_model->getAll()->paginate(6);
 
         $company_model = app()->make('App\Models\Company');
         $companies = $company_model->getAll();
-
         return view('product.list', [
             'products' => $products,
             'companies' => $companies
         ]);
     }
 
-    /*
     
     /*一覧画面-検索*/
-    public function search(Request $request)
+    /*public function search(Request $request)
     {   
         $date = $request->all();
 
@@ -55,7 +53,22 @@ class ProductController extends Controller
         'products' => $products,
         'companies' => $companies
         ]);
+    }*/
+    public function search(Request $request)
+    {   
+        $date = $request->all();
+        
+        $products_model = app()->make('App\Models\Product');
+        $products = $products_model->searchDate($date)->paginate(6);;
+        $company_model = app()->make('App\Models\Company');
+        $companies = $company_model->getAll();        
+
+        return response()->json([
+            'products' => $products,
+            'companies' => $companies
+        ]);
     }
+    
 
     /*一覧画面-削除 */
     public function destroy($id)
@@ -185,4 +198,5 @@ class ProductController extends Controller
         
         return redirect('create');
     }
+
 }

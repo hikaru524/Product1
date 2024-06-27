@@ -9,12 +9,12 @@
             <div class="card-header top">商品一覧画面</div>
             
                     <!--<div class="row">-->
-                        <form class="serch-form" action="{{ route('search') }}" method="GET">
+                        <form class="search-form" action="{{ route('search') }}" method="GET">
                             <div class="col">
-                                <input type="text" class="form-control" placeholder="検索キーワード" name="keyword">
+                                <input type="text" id="keyword" class="form-control" placeholder="検索キーワード" name="keyword">
                             </div>
                             <div class="col">
-                                <select class="form-select" name="company_id">
+                                <select id="company_id" class="form-select" name="company_id">
                                     <option value="">--未選択--</option>
                                     @foreach($companies as $value)
                                         <option value="{{ $value->id }}">{{ $value->company_name }}</option>
@@ -22,7 +22,7 @@
                                 </select>
                             </div>
                             <div class="col">
-                                <button type="submit" class="btn btn-outline-secondary">検索</button>
+                                <button type="submit" id="btn" class="btn btn-outline-secondary">検索</button>
                             </div>
                         </form>
                     <!--</div>-->
@@ -41,7 +41,7 @@
                                 <th><a href="{{ route('create.show') }}" class="btn btn-warning">新規登録</a></th>
                             </tr>
                             </thead>
-                            <tbody>
+                            <tbody id="addArea">
                             @foreach($products as $value)
                             <tr>
                                 <td>{{ $value->id }}</td>
