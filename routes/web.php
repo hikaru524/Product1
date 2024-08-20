@@ -26,6 +26,8 @@ Route::get('/list', [App\Http\Controllers\ProductController::class, 'list'])->na
 Route::post('/delete/{id}', [App\Http\Controllers\ProductController::class, 'destroy'])->name('product.delete');
 //一覧画面-検索
 Route::get('/search', [App\Http\Controllers\ProductController::class, 'search'])->name('search');
+//一覧画面-ソート
+Route::get('/sort', [App\Http\Controllers\ProductController::class, 'sort'])->name('sort');
 //一覧画面-ページ
 //Route::get('/list', [App\Http\Controllers\ProductController::class, 'page'])->name('page');
 
