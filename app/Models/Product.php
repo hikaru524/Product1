@@ -5,9 +5,12 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
+use Kyslik\ColumnSortable\Sortable;
 
 class Product extends Model
 {
+    use Sortable; // ソート機能
+
     const UPDATED_AT = null;
     protected $fillable = [
         'product_name',
@@ -17,6 +20,13 @@ class Product extends Model
         'company_id',
         'comment'
     ];
+    public $sortable = [
+        'id',
+        'product_name',
+        'price',
+        'stock',
+        'company_id',
+    ];
 
     public $table = 'products';
 
@@ -25,7 +35,7 @@ class Product extends Model
      * @param
      */
     public function getAll(){
-        $products = DB::table($this->table)
+        $products = Product::sortable($this->table)
         ->select(
             'products.*',
             'companies.id as company_id',
@@ -43,7 +53,8 @@ class Product extends Model
      * @param
      */
     public function searchDate($date){
-        $products = DB::table($this->table)
+        
+        $products = Product::sortable($this->table)
         ->select(
             'products.*',
             'companies.id as company_id',
@@ -51,6 +62,7 @@ class Product extends Model
         )
         ->leftjoin('companies', 'products.company_id', '=', 'companies.id');
 
+        /*検索-ワード */
         if(!empty($date['keyword'])){
             $keyword = $date['keyword'];
             $products->where(function ($products) use($keyword){
@@ -58,18 +70,65 @@ class Product extends Model
                 $products->orwhere('comment','like', '%'.$keyword.'%');
             });
         }
-
+        /*検索-会社*/
         if(!empty($date['company_id'])){
             $company_id = $date['company_id'];
             $products->where('company_id',$company_id);
         }
+        /*検索-価格 */
+        /*最小*/
+        if(!empty($date['price_min'])){
+            $price_min = $date['price_min'];
+            $products->where(function ($products) use($price_min){
+                $products->orwhere('price','>=', $price_min);
+            });
+        }
+        /*最大*/        
+        if(!empty($date['price_max'])){
+            $price_max = $date['price_max'];
+            $products->where(function ($products) use($price_max){
+                $products->orwhere('price','<=', $price_max);
+            });
+        }
 
-        $products->orderBy('id','asc');
+        /*検索-在庫 */
+        /*最小*/
+        if(!empty($date['stock_min'])){
+            $stock_min = $date['stock_min'];
+            $products->where(function ($products) use($stock_min){
+                $products->orwhere('stock','>=', $stock_min);
+            });
+        }
+        /*最大*/        
+        if(!empty($date['stock_max'])){
+            $stock_max = $date['stock_max'];
+            $products->where(function ($products) use($stock_max){
+                $products->orwhere('stock','<=', $stock_max);
+            });
+        }
         $products = $products->get();
 
         return $products;
     }
+    
+    /**
+     * 
+     * @param
+     */
+    public function sortDate($date){
+        $products = DB::table($this->table)
+        ->select(
+            'products.*',
+            'companies.id as company_id',
+            'companies.company_name as company_name',
+        )
+        ->leftjoin('companies', 'products.company_id', '=', 'companies.id')
+        ->orderBy('id','asc')
+        ->get();
 
+        return $products;
+    }
+    
     /**
      * 
      * @param
@@ -116,11 +175,4 @@ class Product extends Model
 
         return $update;
     }
-
-    /*一覧画面-削除 */
-    public function deleteBookById($id)
-    {
-        $products_del->destroy($id);
-    }
-
 }

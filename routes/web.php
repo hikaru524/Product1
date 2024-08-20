@@ -26,9 +26,10 @@ Route::get('/list', [App\Http\Controllers\ProductController::class, 'list'])->na
 Route::post('/delete/{id}', [App\Http\Controllers\ProductController::class, 'destroy'])->name('product.delete');
 //一覧画面-検索
 Route::get('/search', [App\Http\Controllers\ProductController::class, 'search'])->name('search');
+//一覧画面-ソート
+Route::get('/sort', [App\Http\Controllers\ProductController::class, 'sort'])->name('sort');
 //一覧画面-ページ
 //Route::get('/list', [App\Http\Controllers\ProductController::class, 'page'])->name('page');
-
 
 //新規登録画面-表示
 Route::get('/create', [App\Http\Controllers\ProductController::class, 'createShow'])->name('create.show');
@@ -42,3 +43,6 @@ Route::get('/product/{id}', [App\Http\Controllers\ProductController::class, 'pro
 Route::get('/edit/{id}', [App\Http\Controllers\ProductController::class, 'productedit'])->name('product.edit');
 //商品編集画面-更新
 Route::put('/edit/{id}', [App\Http\Controllers\ProductController::class, 'productupdate'])->name('product.update');
+
+//一覧画面-検索-ajax
+Route::get('/list/{search}', 'ProductController@getProductBygetsearch');

@@ -27,42 +27,73 @@ class ProductController extends Controller
     public function list()
     {   
         $products_model = app()->make('App\Models\Product');
-        $products = $products_model->paginate(6);
+        $products = $products_model->getAll()->paginate(6);
 
         $company_model = app()->make('App\Models\Company');
         $companies = $company_model->getAll();
 
+        $pager = $products;
+        
         return view('product.list', [
             'products' => $products,
-            'companies' => $companies
-        ]);
+            'companies' => $companies,
+            'pager' => $pager
+        ])->with('products', $products);
     }
 
-    /*
     
     /*一覧画面-検索*/
     public function search(Request $request)
     {   
         $date = $request->all();
-
+        
         $products_model = app()->make('App\Models\Product');
         $products = $products_model->searchDate($date)->paginate(6);
-
         $company_model = app()->make('App\Models\Company');
-        $companies = $company_model->getAll();
+        $companies = $company_model->getAll();        
+        $pager = $products;
 
-        return view('product.list', [
-        'products' => $products,
-        'companies' => $companies
+        return response()->json([
+            'products' => $products,
+            'companies' => $companies,
+            'pager' => $pager,
         ]);
+        
     }
 
     /*一覧画面-削除 */
-    public function destroy($id)
+    public function sort(Request $request)
     {   
-        $products_del = Product::destroy($id);
+        $sort = $request->sort;
+        $order = $request->order;
+	//パラメータが無い場合（デフォルト）はidの降順（desc）を設定
+        if (is_null($sort) && is_null($order)) {
+            $sort = 'id';
+            $order = 'desc';
+        }
+
+        $orderpram = "desc";
+	//設定されたデータの並びがdescの場合、viewのリンクパラメータ$orderに昇順（asc）を設定
+        if($order=="desc"){
+            $orderpram="asc";
+        }
+
+	//idのソートデータを20件取得
+        $listpages = Product::orderBy($sort, $order)->paginate(20);
         
-        return redirect('list');
+        return view('product.list', [
+            'products' => $products,
+            'companies' => $companies,
+            'order' => $orderpram,
+        ]);
+        
+    }
+
+    /*一覧画面-削除 */
+    public function destroy(Request $request)
+    {   
+        $products = Product::findOrfail($request->id);
+        $products->delete();
     }
 
 
@@ -185,4 +216,5 @@ class ProductController extends Controller
         
         return redirect('create');
     }
+
 }
