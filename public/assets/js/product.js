@@ -36,14 +36,11 @@ $(function() {
       .done(function (data){
       // 取得成功
          console.log(data);
-         var page = data.pager;
          var data = data.products.data
          var html = '';
          //一覧表示リセット
          var $result = $('#addlist');
-         var $page = $('#addpage');
          $result.empty();
-         console.log(page);
          
       //検索結果更新
          $.each(data, function(data, value) {
@@ -72,9 +69,6 @@ $(function() {
                </tr>
             `
             $result.append(html);
-            html = `{{ ${page}->links('vendor.pagination.bootstrap-4') }}`
-            $page.append(html);
-
          })
       })
       //通信が失敗したとき
@@ -182,5 +176,81 @@ $(function() {
          console.log(data);
          alert('ファイルの取得に失敗しました。');
       });   
+   });
+});
+
+//API-ページネーション
+$(function(){
+   $('.page-link').click(function(event) {
+      event.preventDefault();
+      var url = $(this).attr('href');
+      var page = url.split("=");
+
+      $.getJSON('/product/public/jsonpage?page=' + page[1] ,null,function(data){
+         //グローバルパラメータ取得
+         var next_page_url = data.products.next_page_url;
+         var prev_page_url = data.products.prev_page_url;
+         var last_page = data.products.last_page;
+         var data = data.products.data;
+         var html = '';
+         var $result = $('#addlist');
+         $result.empty();
+
+         //テーブルを描画
+         $.each(data, function(data, value) {
+            var id = value.id;
+            var name = value.product_name;
+            var img = "http://localhost:8888/product/public" + value.img_path;
+            var price = value.price;
+            var stock = value.stock;
+            var company_name = value.company_name;
+            page = $('#get-page').data(data-name, data.products);
+            //更新データ表示
+            html = `
+            <tr id="${id}">
+            <td>${id}</td>
+            <td><img src=${img} class="img_list"></td>
+            <td>${name}</td>
+            <td>¥${price}</td>
+            <td>${stock}</td>
+            <td>${company_name}</td>
+
+            <td class="btn-show-del">
+            <a href="{{ route('product.show', ['id'=>$value->id] ) }}" class="btn btn-info">詳細</a>
+            <form action="{{ route('product.delete', ['id'=>$value->id]) }}" method="POST">
+            <button type="submit" class="btn btn-danger btn-del" value="${id}">削除</button>
+            </form>
+            </td>
+            </tr>
+            `
+            $result.append(html);
+         })
+
+         $(".pagination").empty();
+         //Prev 制御
+         if(prev_page_url == null){
+            $(".pagination").append("<li class='disabled'><a href=''>«</a></li>");
+         }else{
+            $(".pagination").append("<li><a href='/product/public/list?page="+(page-1)+"'>«</a></li>");
+            console.log(prev_page_url);
+         }
+         //ページリンク
+         for(var i=0;i<last_page;i++){
+            var link_page = i+1;
+            //activeにするかどうか
+            if(page==link_page){
+               $(".pagination").append("<li class='active'><a href='/list?page="+link_page+"'>"+link_page+"</a></li>");
+            }else{
+               $(".pagination").append("<li><a href='/product/public/list?page="+link_page+"'>"+link_page+"</a></li>");
+            }   
+         }
+         //Next制御
+         if(next_page_url == null){
+            $(".pagination").append("<li class='disabled'><a href=''>»</a></li>");
+         }else{
+            $(".pagination").append("<li><a href='/product/public/list?page="+(page+1)+"'>»</a></li>");
+         }
+      });
+
    });
 });

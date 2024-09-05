@@ -10,6 +10,7 @@ use Kyslik\ColumnSortable\Sortable;
 class Product extends Model
 {
     use Sortable; // ソート機能
+    use HasFactory;
 
     const UPDATED_AT = null;
     protected $fillable = [
@@ -18,7 +19,8 @@ class Product extends Model
         'stock',
         'img_path',
         'company_id',
-        'comment'
+        'comment',
+        'product_id'
     ];
     public $sortable = [
         'id',
@@ -26,6 +28,15 @@ class Product extends Model
         'price',
         'stock',
         'company_id',
+    ];
+    
+    /**
+     * The attributes that should be cast to native types.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'stock' => 'int',
     ];
 
     public $table = 'products';
@@ -175,4 +186,39 @@ class Product extends Model
 
         return $update;
     }
+
+    /*API-在庫検索 */
+    public function searchId($id)
+    {
+        $products = DB::table($this->table)
+            ->where('id',$id)
+            ->value('stock');
+
+        return $products;
+    }
+    /*API-在庫更新 */
+    public function updateId($id,$stock)
+    {
+        $products = DB::table($this->table)
+            ->where('id',$id)
+            ->value('stock');
+
+        return $products;
+    }
+    
+    /*API-ページネーション*/
+    public function getPage(){
+        $products = Product::sortable($this->table)
+        ->select(
+            'products.*',
+            'companies.id as company_id',
+            'companies.company_name as company_name',
+        )
+        ->leftjoin('companies', 'products.company_id', '=', 'companies.id')
+        ->orderBy('id','desc')
+        ->get();
+
+        return $products;
+    }
+
 }
