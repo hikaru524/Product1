@@ -6,6 +6,7 @@ use App\Models\Product;
 use App\Models\Company;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Input;
 
 class ProductController extends Controller
 {
@@ -24,7 +25,7 @@ class ProductController extends Controller
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function list()
+    public function list(Request $request)
     {   
         $products_model = app()->make('App\Models\Product');
         $products = $products_model->getAll()->paginate(6);
@@ -32,15 +33,17 @@ class ProductController extends Controller
         $company_model = app()->make('App\Models\Company');
         $companies = $company_model->getAll();
 
-        $pager = $products;
+        $page = $request->page;
+        if(empty($page)) $page = 1;
         
         return view('product.list', [
             'products' => $products,
             'companies' => $companies,
-            'pager' => $pager
-        ])->with('products', $products);
+        ])->with([
+            'products'=> $products,
+            'page'=> $page
+        ]);
     }
-
     
     /*一覧画面-検索*/
     public function search(Request $request)
@@ -56,29 +59,28 @@ class ProductController extends Controller
         return response()->json([
             'products' => $products,
             'companies' => $companies,
-            'pager' => $pager,
         ]);
         
     }
 
-    /*一覧画面-削除 */
+    /*一覧画面-ソート */
     public function sort(Request $request)
     {   
         $sort = $request->sort;
         $order = $request->order;
-	//パラメータが無い場合（デフォルト）はidの降順（desc）を設定
+	    //パラメータが無い場合（デフォルト）はidの降順（desc）を設定
         if (is_null($sort) && is_null($order)) {
             $sort = 'id';
             $order = 'desc';
         }
 
         $orderpram = "desc";
-	//設定されたデータの並びがdescの場合、viewのリンクパラメータ$orderに昇順（asc）を設定
+	    //設定されたデータの並びがdescの場合、viewのリンクパラメータ$orderに昇順（asc）を設定
         if($order=="desc"){
             $orderpram="asc";
         }
 
-	//idのソートデータを20件取得
+	    //idのソートデータを20件取得
         $listpages = Product::orderBy($sort, $order)->paginate(20);
         
         return view('product.list', [
@@ -121,6 +123,7 @@ class ProductController extends Controller
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
+    /*登録画面-更新 */
     public function create(Request $request)
     {   
         $request->validate([
@@ -200,6 +203,7 @@ class ProductController extends Controller
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
+    /*商品編集画面-更新 */
     public function edit(Request $request)
     {   
         $data = $request->all();
@@ -215,6 +219,30 @@ class ProductController extends Controller
 
         
         return redirect('create');
+    }
+
+    /*API-ページネーション-送信 */
+    public function jsonpage()
+    {   
+        $products_model = app()->make('App\Models\Product');
+        $products = $products_model->getPage()->paginate(6);
+        $company_model = app()->make('App\Models\Company');
+        $companies = $company_model->getPage();
+
+        return response()->json([
+            'products' => $products,
+            'companies' => $companies,
+        ]);
+    }
+    /*API-ページネーション-適用 */
+    public function jsonajax(Request $request)
+    {   
+        $page = $request->page;
+        if(empty($page)) $page = 1;
+
+        return view()->with(
+            'page', $page
+        );
     }
 
 }

@@ -21,4 +21,10 @@ class Company extends Model
 
         return $companies;
     }
+
+    public function getPage(){
+        $companies = DB::table($this->table)->get();
+
+        return $companies;
+    }
 }

@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\API;
 
+use App\Models\Product;
+use App\Models\Company;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Sales;
@@ -36,4 +38,28 @@ class SalesController extends Controller
          }
          return response()->json($result, $statusCode, ['Content-Type' => 'application/json'], JSON_UNESCAPED_SLASHES);
      }
+    
+    //jsonを返す
+    public function json()
+    {   
+        $products_model = app()->make('App\Models\Product');
+        $products = $products_model->getAll()->paginate(6);
+
+        $company_model = app()->make('App\Models\Company');
+        $companies = $company_model->getAll();
+        
+        return \Response::json([
+            'products' => $products,
+            'companies' => $companies,
+        ]);
+    }
+    
+    //ajax
+    public function ajax()
+    {   
+        $page = $products->input('page');
+        if(empty($page)) $page = 1;
+
+        return view('product.ajax')->with('page', $page);
+    }
 }
