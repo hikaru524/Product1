@@ -185,8 +185,9 @@ $(function(){
       event.preventDefault();
       var url = $(this).attr('href');
       var page = url.split("=");
-
-      $.getJSON('/product/public/jsonpage?page=' + page[1] ,null,function(data){
+      page = page[1];
+      console.log(page);
+      $.getJSON('/product/public/jsonpage?page=' + page ,null,function(data){
          //グローバルパラメータ取得
          var next_page_url = data.products.next_page_url;
          var prev_page_url = data.products.prev_page_url;
@@ -195,6 +196,7 @@ $(function(){
          var html = '';
          var $result = $('#addlist');
          $result.empty();
+         $('.pagination').empty();
 
          //テーブルを描画
          $.each(data, function(data, value) {
@@ -204,7 +206,6 @@ $(function(){
             var price = value.price;
             var stock = value.stock;
             var company_name = value.company_name;
-            page = $('#get-page').data(data-name, data.products);
             //更新データ表示
             html = `
             <tr id="${id}">
@@ -224,33 +225,41 @@ $(function(){
             </tr>
             `
             $result.append(html);
-         })
+         }) 
+         
+            //ページネーターを描画
 
-         $(".pagination").empty();
-         //Prev 制御
-         if(prev_page_url == null){
-            $(".pagination").append("<li class='disabled'><a href=''>«</a></li>");
-         }else{
-            $(".pagination").append("<li><a href='/product/public/list?page="+(page-1)+"'>«</a></li>");
-            console.log(prev_page_url);
-         }
-         //ページリンク
-         for(var i=0;i<last_page;i++){
-            var link_page = i+1;
-            //activeにするかどうか
-            if(page==link_page){
-               $(".pagination").append("<li class='active'><a href='/list?page="+link_page+"'>"+link_page+"</a></li>");
-            }else{
-               $(".pagination").append("<li><a href='/product/public/list?page="+link_page+"'>"+link_page+"</a></li>");
-            }   
-         }
-         //Next制御
-         if(next_page_url == null){
-            $(".pagination").append("<li class='disabled'><a href=''>»</a></li>");
-         }else{
-            $(".pagination").append("<li><a href='/product/public/list?page="+(page+1)+"'>»</a></li>");
-         }
+            //Prev 制御
+            if(prev_page_url == null){
+               $(".pagination").append("<li class='page-item disabled'  aria-disabled='true' aria-label='@lang('pagination.previous')'><span class='page-link' aria-hidden='true'>&lsaquo;</span></li>");
+           }else{
+               $(".pagination").append("<li  class='page-item'><a class='page-link' href='/product/public/list?page='"+(page-1)+"  rel='prev' aria-label='@lang('pagination.previous')'>‹</a></li>");
+           }
+
+           //ページリンク
+           for(var i=0;i<last_page;i++)
+           {
+               var link_page = i+1;
+
+               //activeにするかどうか
+               if(page==link_page)
+               {
+                  $(".pagination").append("<li class='page-item active' aria-current='page'><span class='page-link'>"+link_page+"</span></li>");               
+               }else{
+                  $(".pagination").append("<li class='page-item'><a class='page-link' href='/product/public/list?page="+link_page+"'>"+link_page+"</a></li>");
+               }   
+           }
+
+           //Next制御
+           if(next_page_url == null){
+               $(".pagination").append("<li class='page-item disabled'><span class='page-link' aria-hidden='true'>›</span></li>");
+           }else{
+               $(".pagination").append("<li class='page-item'><a class='page-link' href='/product/public/list?page="+(page+1)+"' rel='next' aria-label='@lang('pagination.next')'>›</a></li>");
+           }
+           console.log(page);
+           console.log(link_page);
       });
-
    });
 });
+
+

@@ -25,5 +25,5 @@ Route::post('/purchase', [App\Http\Controllers\SalesController::class, 'purchase
 //一覧画面-json送信
 //API
 Route::get('/jsonpage', [App\Http\Controllers\ProductController::class, 'jsonpage'])->name('jsonpage');
-Route::get('/jsonajax', [App\Http\Controllers\ProductController::class, 'jsonajax'])->name('jsonajax');
+//Route::get('/jsonajax', [App\Http\Controllers\ProductController::class, 'jsonajax'])->name('jsonajax');
 

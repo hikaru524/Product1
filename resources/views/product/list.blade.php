@@ -87,8 +87,7 @@
                 </div>
         </div>
         <div id="addpage">
-        {{ $products->links('vendor.pagination.bootstrap-4') }}
-
+            {{ $products->links('vendor.pagination.bootstrap-4') }}
         </div>
     </div>
 </div>
