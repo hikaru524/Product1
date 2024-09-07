@@ -237,12 +237,17 @@ class ProductController extends Controller
     /*API-ページネーション-適用 */
     public function jsonajax(Request $request)
     {   
-        $page = $request->page;
-        if(empty($page)) $page = 1;
+        $products_model = app()->make('App\Models\Product');
+        $products = $products_model->getPage()->paginate(6);
+        $company_model = app()->make('App\Models\Company');
+        $companies = $company_model->getPage();
 
-        return view()->with(
-            'page', $page
-        );
+        return view('product.list', [
+            'products' => $products,
+            'companies' => $companies,
+        ])->with([
+            'products'=> $products,
+        ]);
     }
 
 }
