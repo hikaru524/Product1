@@ -6,7 +6,7 @@
 <div class="container-row">
     <div class="row justify-content-center">
         <div class="col-md-8">
-            <div id="get-page" class="card-header top"  data-name="{{ $page }}">商品一覧画面</div>
+            <div id="get-page" class="card-header top" data="">商品一覧画面</div>
                 <form class="search-form" action="{{ route('search') }}" method="GET">
                     <!--検索ーワード-->
                         <div class="search">
