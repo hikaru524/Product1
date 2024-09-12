@@ -222,12 +222,15 @@ class ProductController extends Controller
     }
 
     /*API-ページネーション-送信 */
-    public function jsonpage()
+    public function jsonpage(Request $request)
     {   
+        $date = $request->all();
+        
         $products_model = app()->make('App\Models\Product');
-        $products = $products_model->getPage()->paginate(6);
+        $products = $products_model->searchDate($date)->paginate(6);
         $company_model = app()->make('App\Models\Company');
-        $companies = $company_model->getPage();
+        $companies = $company_model->getAll();        
+        $pager = $products;
 
         return response()->json([
             'products' => $products,

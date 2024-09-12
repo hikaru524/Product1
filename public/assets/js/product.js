@@ -39,8 +39,16 @@ $(document).on('click', '.page-link', function(event){
    var url = $(this).attr('href');
    var page = url.split("=");
    page = page[1];
+   var keyword = $('#keyword').val();
+   var company_id = $('#company_id').val();
+   var price_min = $('#price_min').val();
+   var price_max = $('#price_max').val();
+   var stock_min = $('#stock_min').val();
+   var stock_max = $('#stock_max').val();      
+   var url = "/product/public/search" + "?keyword=" + keyword + "&company_id=" + company_id + "&price_min=" + price_min + "&price_max=" + price_max + "&stock_min=" + stock_min + "&stock_max=" + stock_max + "&page=";
+   $('#get-page').attr('data', page);
 
-   $.getJSON('/product/public/search?page=' + page ,null,function(data){
+   $.getJSON(url + page ,null,function(data){
       //グローバルパラメータ取得
       var pagedata = data;
       var data = data.products.data;

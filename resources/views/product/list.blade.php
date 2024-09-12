@@ -6,7 +6,7 @@
 <div class="container-row">
     <div class="row justify-content-center">
         <div class="col-md-8">
-            <div id="get-page" class="card-header top" data="">商品一覧画面</div>
+            <div id="get-page" class="card-header top" data-name="">商品一覧画面</div>
                 <form class="search-form" action="{{ route('search') }}" method="GET">
                     <!--検索ーワード-->
                         <div class="search">
@@ -55,11 +55,11 @@
                     <table class="table table-striped">
                         <thead class="table-light">
                         <tr>
-                            <th>@sortablelink('id', 'ID')</th>
+                            <th><a class="fa fa-sort">ID</a></th>
                             <th>商品画像</th>
-                            <th>@sortablelink('product_name', '名前')</th>
-                            <th>@sortablelink('price', '価格')</th>
-                            <th>@sortablelink('stock', '在庫')</th>
+                            <th><a class="fa fa-sort">名前</a></th>
+                            <th><a class="fa fa-sort">価格</a></th>
+                            <th><a class="fa fa-sort">在庫</a></th>
                             <th>@sortablelink('company_name', '会社名')</th>
                             <th><a href="{{ route('create.show') }}" class="btn btn-warning">新規登録</a></th>
                         </tr>
