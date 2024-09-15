@@ -117,7 +117,16 @@ class Product extends Model
                 $products->orwhere('stock','<=', $stock_max);
             });
         }
-        $products = $products->get();
+        /*最大*/        
+        if(!empty($date['sort_parm'])){
+            if(($date['sort_parm'])=='asc'){
+                $products = $products->orderBy(($date['sort_tergget']),'asc')->get();
+            }else{
+                $products = $products->orderBy(($date['sort_tergget']),'desc')->get();
+            };
+        }else{
+            $products = $products->orderBy('id','asc')->get();
+        }
 
         return $products;
     }

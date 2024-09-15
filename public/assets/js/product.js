@@ -6,14 +6,16 @@ function createPagintion(pagedata, page){
    var url = pagedata.products.first_page_url;
    if(page == null){
       page = 1;
-      console.log(page);
    }
+   var back_page = page - 1;
+   var next_page = page;
+   next_page++;
    $('.pagination').empty();
    //Prev 制御
    if(prev_page_url == null){
       $(".pagination").append("<li class='page-item disabled'  aria-disabled='true' aria-label='@lang('pagination.previous')'><span class='page-link' aria-hidden='true'>&lsaquo;</span></li>");
    }else{
-      $(".pagination").append("<li  class='page-item'><a class='page-link' href='/product/public/search?page='"+(page-1)+"  rel='prev' aria-label='@lang('pagination.previous')'>‹</a></li>");
+      $(".pagination").append("<li  class='page-item'><a class='page-link' href='/product/public/search?page="+back_page+"'  rel='prev' aria-label='@lang('pagination.previous')'>‹</a></li>");
    }
    //ページリンク
    for(var i=0;i<last_page;i++){
@@ -29,7 +31,7 @@ function createPagintion(pagedata, page){
    if(next_page_url == null){
       $(".pagination").append("<li class='page-item disabled'><span class='page-link' aria-hidden='true'>›</span></li>");
    }else{
-      $(".pagination").append("<li class='page-item'><a class='page-link' href='/product/public/search?page="+(page+1)+"' rel='next' aria-label='@lang('pagination.next')'>›</a></li>");
+      $(".pagination").append("<li class='page-item'><a class='page-link' href='/product/public/search?page="+next_page+"' rel='next' aria-label='@lang('pagination.next')'>›</a></li>");
    }
 };
 
@@ -45,7 +47,16 @@ $(document).on('click', '.page-link', function(event){
    var price_max = $('#price_max').val();
    var stock_min = $('#stock_min').val();
    var stock_max = $('#stock_max').val();      
-   var url = "/product/public/search" + "?keyword=" + keyword + "&company_id=" + company_id + "&price_min=" + price_min + "&price_max=" + price_max + "&stock_min=" + stock_min + "&stock_max=" + stock_max + "&page=";
+   if(!price_min){
+      price_min = 0;
+   };
+   if(!stock_min){
+      stock_min = 0;
+   };
+   var sort_parm = $('#get-page').attr('data-parm');
+   var sort_tergget = $('#get-page').attr('data-sort');
+
+   var url = "/product/public/search" + "?keyword=" + keyword + "&company_id=" + company_id + "&price_min=" + price_min + "&price_max=" + price_max + "&stock_min=" + stock_min + "&stock_max=" + stock_max+ "&sort_tergget=" + sort_tergget + "&sort_parm=" + sort_parm  + "&page=";
    $('#get-page').attr('data', page);
 
    $.getJSON(url + page ,null,function(data){
@@ -98,15 +109,14 @@ $(function() {
       var price_max = $('#price_max').val();
       var stock_min = $('#stock_min').val();
       var stock_max = $('#stock_max').val();      
-      var url = "/product/public/search" + "?keyword=" + keyword + "&company_id=" + company_id + "&price_min=" + price_min + "&price_max=" + price_max + "&stock_min=" + stock_min + "&stock_max=" + stock_max;
-      $('#get-page').attr('data', url);
-
       if(!price_min){
          price_min = 0;
       };
       if(!stock_min){
          stock_min = 0;
       };
+      var url = "/product/public/search" + "?keyword=" + keyword + "&company_id=" + company_id + "&price_min=" + price_min + "&price_max=" + price_max + "&stock_min=" + stock_min + "&stock_max=" + stock_max;
+      $('#get-page').attr('data', url);
 
       //通信開始
       $.ajax({
@@ -177,6 +187,89 @@ $(function() {
    });
 });
 
+//ソート
+$(document).on('click', '#sort_trg', function(event) {
+   event.preventDefault();
+   //検索値取得
+   var keyword = $('#keyword').val();
+   var company_id = $('#company_id').val();
+   var price_min = $('#price_min').val();
+   var price_max = $('#price_max').val();
+   var stock_min = $('#stock_min').val();
+   var stock_max = $('#stock_max').val();      
+   if(!price_min){
+      price_min = 0;
+   };
+   if(!stock_min){
+      stock_min = 0;
+   };
+   //ソート項目
+   var sort_tergget = $(this).attr('data-name');
+   var sort = $('#get-page').attr('data-sort'); 
+   var sort_parm = $('#get-page').attr('data-parm');
+   var page = $('#get-page').attr('data-name');   
+   if(sort_tergget == sort){
+      if(sort_parm == "" || sort_parm == 'desc'){
+         $('#get-page').attr('data-parm', 'asc');
+         sort_parm = "asc";
+         $('#get-page').attr('data-sort', sort_tergget);
+      }else{
+         $('#get-page').attr('data-parm', 'desc');
+         sort_parm = "desc";
+         $('#get-page').attr('data-sort', sort_tergget);
+      };
+   }else{
+      if(sort_parm == "" || sort_parm == 'desc'){
+         $('#get-page').attr('data-parm', 'asc');
+         sort_parm = "asc";
+         $('#get-page').attr('data-sort', sort_tergget);
+      }else{
+         $('#get-page').attr('data-parm', 'desc');
+         sort_parm = "desc";
+         $('#get-page').attr('data-sort', sort_tergget);
+      };
+   };
+   var url = "/product/public/search" + "?keyword=" + keyword + "&company_id=" + company_id + "&price_min=" + price_min + "&price_max=" + price_max + "&stock_min=" + stock_min + "&stock_max=" + stock_max + "&sort_tergget=" + sort_tergget + "&sort_parm=" + sort_parm  + "&page=";
+   
+   $.getJSON(url + page ,null,function(data){
+      //グローバルパラメータ取得
+      var pagedata = data;
+      var data = data.products.data;
+      var $result = $('#addlist');
+      $result.empty();
+      $('.pagination').empty();
+      createPagintion(pagedata, page);  
+      //テーブルを描画
+      $.each(data, function(data, value) {
+         var id = value.id;
+         var name = value.product_name;
+         var img = "http://localhost:8888/product/public" + value.img_path;
+         var price = value.price;
+         var stock = value.stock;
+         var company_name = value.company_name;
+         //更新データ表示
+         html = `
+         <tr id="${id}">
+         <td>${id}</td>
+         <td><img src=${img} class="img_list"></td>
+         <td>${name}</td>
+         <td>¥${price}</td>
+         <td>${stock}</td>
+         <td>${company_name}</td>
+
+         <td class="btn-show-del">
+         <a href="{{ route('product.show', ['id'=>$value->id] ) }}" class="btn btn-info">詳細</a>
+         <form action="{{ route('product.delete', ['id'=>$value->id]) }}" method="POST">
+         <button type="submit" class="btn btn-danger btn-del" value="${id}">削除</button>
+         </form>
+         </td>
+         </tr>
+         `
+         $result.append(html);
+      }) 
+   }) 
+});
+
 //入力リセット
 $(function(){
    $('#btn-clear').click(function() {
@@ -193,46 +286,6 @@ $(function(){
       stock_min.value = ""; 
       stock_max.value = ""; 
 
-   });
-});
-
-//ソート
-$(function() {
-   $('.sort_data').click(function(event) {
-      event.preventDefault();
-      var order = $('.sort_data').data();
-      console.log(order);
-      //検索値取得
-      var url = "/product/public/search" + "?keyword=" + keyword + "&company_id=" + company_id + "&price_min=" + price_min + "&price_max=" + price_max + "&stock_min=" + stock_min + "&stock_max=" + stock_max;
-
-
-      //通信開始
-      $.ajax({
-         type:"get",
-         url:url,
-         data: {
-            'keyword': keyword, 
-            'company_id': company_id,             
-            'price_min': price_min, 
-            'price_max': price_max,             
-            'stock_min': stock_min, 
-            'stock_max': stock_max,    
-         },
-         dataType: 'json',
-      })   
-      .done(function (data){
-      })
-      //通信が失敗したとき
-      .fail(function (jqXHR, textStatus, errorThrown) {
-         // 通信失敗時の処理
-         console.log("ajax通信に失敗しました");
-         console.log("jqXHR          : " + jqXHR.status); // HTTPステータスが取得
-         console.log("textStatus     : " + textStatus);    // タイムアウト、パースエラー
-         console.log("errorThrown    : " + errorThrown.message); // 例外情報
-         console.log("URL            : " + url);
-         console.log(data);
-         alert('ファイルの取得に失敗しました。');
-      });
    });
 });
 
