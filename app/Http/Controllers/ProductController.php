@@ -232,7 +232,6 @@ class ProductController extends Controller
         } 
         DB::commit();
 
-        
         return redirect('create');
     }
 
