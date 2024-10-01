@@ -308,7 +308,10 @@ $(function() {
       })
       // 通信が成功したとき
          .done(function() {
-            del.parents('tr').remove();
+            if(confirm('削除してもよろしいですか？')){
+               alert('削除しました');
+               del.parents('tr').remove();
+            }
        })
       //通信が失敗したとき
       .fail(function (jqXHR, textStatus, errorThrown) {

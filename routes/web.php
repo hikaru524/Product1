@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -17,6 +18,7 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+//ログイン画面
 Auth::routes();
 
 Route::get('/home', [App\Http\Controllers\ProductController::class, 'list'])->name('list');
