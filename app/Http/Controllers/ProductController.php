@@ -187,6 +187,21 @@ class ProductController extends Controller
     /*商品編集画面-更新 */
     public function productupdate(Request $request)
     {   
+        $request->validate([
+            'product_name' => 'required', 
+            'company_id' => 'required',
+            'price' => 'required',
+            'stock' => 'required',
+            'comment' => 'nullable', 
+        ],
+        [
+            'product_name.required' => '商品名を入れてください', 
+            'company_id.required' => '会社名を選択してください',
+            'price.required' => '価格を入れてください',
+            'stock.required' => '在庫数を入れてください',
+            'comment.required' => 'コメントを入力してください', 
+        ]);
+
         $products = Product::find($request->id);
         $products->update([
             "product_name" => $request->product_name,
@@ -217,7 +232,6 @@ class ProductController extends Controller
         } 
         DB::commit();
 
-        
         return redirect('create');
     }
 
